@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | My Portal | Emirates Airline Roblox</title>
+  
+  <link rel="icon" href="https://i.ibb.co/84g34ff6/Emirates-banner-logo.jpg" id="favicon" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Open Sans', sans-serif; background-color: #f9fafb; color: #111827; }
+    h1, h2, h3, h4, .font-heading { font-family: 'Montserrat', sans-serif; }
+    
+    /* Preloader */
+    #page-loader { position: fixed; inset: 0; z-index: 999999; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s ease; }
+    .spinner { width: 50px; height: 50px; border: 4px solid #f3f4f6; border-top: 4px solid #D71A21; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Nav */
+    .portal-nav { background-color: #111827; border-bottom: 4px solid #D71A21; position: sticky; top: 0; z-index: 50; }
+    
+    /* Dashboard Cards */
+    .dash-card { background: white; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); padding: 2rem; transition: box-shadow 0.3s; }
+    .dash-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    
+    .ek-btn-primary { display: inline-block; background-color: #D71A21; color: #ffffff; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.75rem 1.5rem; border-radius: 2px; transition: all 0.3s ease; border: 1px solid #D71A21; cursor: pointer; text-align: center; }
+    .ek-btn-primary:hover { background-color: #991b1b; border-color: #991b1b; transform: translateY(-2px); }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <div id="page-loader">
+      <div class="spinner mb-6"></div>
+      <div class="font-heading text-gray-800 text-xs font-bold uppercase tracking-widest">Loading Portal...</div>
+  </div>
+
+  <header class="portal-nav w-full py-4 px-6 md:px-12">
+      <div class="max-w-[1400px] mx-auto flex items-center justify-between">
+          <div class="flex items-center gap-4">
+              <img src="https://i.ibb.co/84g34ff6/Emirates-banner-logo.jpg" class="h-8 object-contain mix-blend-screen opacity-90" alt="Emirates">
+              <div class="h-6 w-px bg-gray-600 hidden sm:block"></div>
+              <span class="text-white font-heading font-bold text-sm tracking-widest uppercase hidden sm:block">My Portal</span>
+          </div>
+          
+          <div class="flex items-center space-x-6 text-white text-sm">
+              <span class="hidden md:inline font-medium text-gray-300" id="user-display-name">Loading...</span>
+              <button onclick="signOut()" class="font-heading font-bold text-[10px] uppercase tracking-widest hover:text-[#D71A21] transition-colors bg-gray-800 px-4 py-2 rounded">
+                  <i class="fa-solid fa-right-from-bracket mr-1"></i> Sign Out
+              </button>
+          </div>
+      </div>
+  </header>
+
+  <main class="flex-grow w-full max-w-[1200px] mx-auto px-6 py-12">
+      
+      <div class="mb-10">
+          <h1 class="text-3xl md:text-4xl font-heading font-bold text-[#111827]">Dashboard</h1>
+          <p class="text-gray-500 mt-2">Manage your virtual operations, loyalty, and flight itineraries.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <div class="lg:col-span-1 space-y-8">
+              
+              <div class="dash-card bg-gradient-to-br from-[#111827] to-[#1f2937] text-white border-none">
+                  <div class="flex justify-between items-start mb-6">
+                      <img src="https://www.flydubai.com/System/img/EK_en.png" class="h-6 opacity-80" alt="Skywards">
+                      <span class="bg-[#b39556] text-[#111827] text-[10px] font-heading font-bold uppercase tracking-widest px-2 py-1 rounded-sm">Active</span>
+                  </div>
+                  <h3 class="text-2xl font-heading font-bold mb-1" id="card-name">Member</h3>
+                  <p class="text-xs text-gray-400 font-mono tracking-widest mb-8" id="card-id">EK-00000000</p>
+                  
+                  <div class="border-t border-gray-700 pt-6 flex justify-between items-end">
+                      <div>
+                          <p class="text-[10px] font-heading uppercase tracking-widest text-gray-400 mb-1">Current Tier</p>
+                          <p class="font-bold text-lg text-blue-400">Blue Member</p>
+                      </div>
+                      <div class="text-right">
+                          <p class="text-[10px] font-heading uppercase tracking-widest text-gray-400 mb-1">Miles Balance</p>
+                          <p class="font-bold text-xl font-mono">0</p>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="dash-card p-0 overflow-hidden">
+                  <h3 class="font-heading font-bold text-[#111827] p-6 border-b border-gray-100">Quick Actions</h3>
+                  <div class="divide-y divide-gray-100">
+                      <a href="https://ek.emiratesgrouproblox.link/book/" target="_blank" class="block p-6 hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                          <div class="flex items-center gap-4">
+                              <div class="w-10 h-10 bg-red-50 text-[#D71A21] rounded flex items-center justify-center"><i class="fa-solid fa-plane-departure"></i></div>
+                              <div>
+                                  <p class="font-bold text-[#111827] text-sm">Book a Flight</p>
+                                  <p class="text-xs text-gray-500">Access the PTFS booking network</p>
+                              </div>
+                          </div>
+                          <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-[#D71A21] transition-colors"></i>
+                      </a>
+                      <a href="https://ek.emiratesgrouproblox.link/manage/" target="_blank" class="block p-6 hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                          <div class="flex items-center gap-4">
+                              <div class="w-10 h-10 bg-gray-100 text-[#111827] rounded flex items-center justify-center"><i class="fa-solid fa-suitcase-rolling"></i></div>
+                              <div>
+                                  <p class="font-bold text-[#111827] text-sm">Manage Booking</p>
+                                  <p class="text-xs text-gray-500">Online check-in & boarding passes</p>
+                              </div>
+                          </div>
+                          <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-[#D71A21] transition-colors"></i>
+                      </a>
+                      <a href="https://careers.emiratesgrouproblox.link" target="_blank" class="block p-6 hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                          <div class="flex items-center gap-4">
+                              <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded flex items-center justify-center"><i class="fa-solid fa-briefcase"></i></div>
+                              <div>
+                                  <p class="font-bold text-[#111827] text-sm">Careers Portal</p>
+                                  <p class="text-xs text-gray-500">Apply for staff positions</p>
+                              </div>
+                          </div>
+                          <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-[#D71A21] transition-colors"></i>
+                      </a>
+                  </div>
+              </div>
+          </div>
+
+          <div class="lg:col-span-2">
+              <div class="dash-card h-full flex flex-col">
+                  <div class="flex justify-between items-center border-b border-gray-100 pb-6 mb-6">
+                      <h3 class="font-heading font-bold text-[#111827] text-xl">My Itineraries</h3>
+                      <button onclick="fetchUserBookings()" class="text-gray-400 hover:text-[#111827] transition-colors"><i class="fa-solid fa-rotate-right"></i></button>
+                  </div>
+                  
+                  <div id="bookings-container" class="flex-grow">
+                      <div class="h-48 flex flex-col items-center justify-center text-gray-400">
+                          <i class="fa-solid fa-spinner fa-spin text-2xl mb-3"></i>
+                          <p class="text-xs font-bold font-heading uppercase tracking-widest">Syncing Database...</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+  </main>
+
+  <script>
+    const sb = window.supabase.createClient(
+        'https://zboyabxzhptnxnmofvcz.supabase.co', 
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpib3lhYnh6aHB0bnhubW9mdmN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3NjU3MTgsImV4cCI6MjA4NTM0MTcxOH0.2et1T3bQqr-ZzZgx-VWaq3kR0FJDprcAbbWBby6oRys'
+    );
+
+    let currentUser = null;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        const { data: { session } } = await sb.auth.getSession();
+        
+        if (!session) {
+            window.location.href = '/login/';
+            return;
+        }
+        
+        currentUser = session.user;
+        const meta = currentUser.user_metadata || {};
+        
+        // Populate UI
+        const displayName = meta.full_name || currentUser.email.split('@')[0];
+        document.getElementById('user-display-name').innerText = displayName;
+        document.getElementById('card-name').innerText = displayName.toUpperCase();
+        
+        // Generate a fake stable ID based on user ID for RP
+        const shortId = currentUser.id.substring(0, 8).toUpperCase();
+        document.getElementById('card-id').innerText = `EK-${shortId}`;
+
+        // Hide Loader
+        const loader = document.getElementById('page-loader');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 600);
+
+        fetchUserBookings();
+    });
+
+    async function fetchUserBookings() {
+        const container = document.getElementById('bookings-container');
+        container.innerHTML = '<div class="h-48 flex flex-col items-center justify-center text-gray-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-3"></i><p class="text-xs font-bold font-heading uppercase tracking-widest">Syncing Database...</p></div>';
+
+        try {
+            const { data, error } = await sb
+                .from('egr_bookings')
+                .select('*, egr_flights(*)')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (data && data.length > 0) {
+                container.innerHTML = data.map(b => {
+                    const f = b.egr_flights || {};
+                    const statusColor = b.status === 'Confirmed' ? 'text-green-600 bg-green-50 border-green-200' : 'text-gray-600 bg-gray-50 border-gray-200';
+                    const depCode = f.departure_airport ? f.departure_airport.split('(')[0] : 'TBD';
+                    const arrCode = f.arrival_airport ? f.arrival_airport.split('(')[0] : 'TBD';
+                    const flightDate = f.flight_date || 'Date TBD';
+                    const checkinBtn = b.is_checked_in 
+                        ? `<span class="text-xs font-bold text-green-600"><i class="fa-solid fa-check mr-1"></i> Checked In</span>`
+                        : `<a href="https://ek.emiratesgrouproblox.link/manage/" target="_blank" class="ek-btn-primary">Manage / Check-in</a>`;
+
+                    return `
+                        <div class="border border-gray-200 rounded-lg p-6 mb-4 hover:border-gray-300 transition-colors">
+                            <div class="flex justify-between items-start mb-4 border-b border-gray-100 pb-4">
+                                <div>
+                                    <span class="inline-block px-2 py-1 rounded border text-[9px] font-bold font-heading uppercase tracking-widest mb-2 ${statusColor}">${b.status}</span>
+                                    <h4 class="font-bold text-[#111827] text-lg">${f.flight_number || 'EK ---'}</h4>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] text-gray-400 font-heading font-bold uppercase tracking-widest mb-1">PNR</p>
+                                    <p class="font-mono font-bold text-[#111827] text-lg">${b.pnr_reference}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <p class="font-bold text-[#111827]">${depCode}</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-gray-300 mx-4"></i>
+                                <div class="text-right">
+                                    <p class="font-bold text-[#111827]">${arrCode}</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded p-4 flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-1"><i class="fa-regular fa-calendar mr-1"></i> ${flightDate}</p>
+                                    <p class="text-xs font-bold text-[#D71A21] uppercase">${b.seat_class}</p>
+                                </div>
+                                ${checkinBtn}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = `
+                    <div class="h-48 flex flex-col items-center justify-center text-center px-6">
+                        <div class="w-16 h-16 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-plane-slash"></i></div>
+                        <p class="font-bold text-[#111827] mb-2">No active bookings.</p>
+                        <p class="text-sm text-gray-500 mb-4">When you book a flight on the main network, it will appear here.</p>
+                        <a href="https://ek.emiratesgrouproblox.link/book/" target="_blank" class="text-xs font-bold font-heading text-[#D71A21] uppercase tracking-widest hover:underline">Book a Flight &rarr;</a>
+                    </div>
+                `;
+            }
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = '<p class="text-sm text-red-500 font-bold text-center">Failed to load itineraries.</p>';
+        }
+    }
+
+    async function signOut() {
+        await sb.auth.signOut();
+        window.location.href = '/login/';
+    }
+  </script>
+</body>
+</html>
